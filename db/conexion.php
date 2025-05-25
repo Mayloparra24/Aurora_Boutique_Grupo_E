@@ -1,8 +1,8 @@
 <?php
 $host = "localhost";
 $dbname = "auroraboutique";
-$user = "postgres";
-$password = "tu_contraseña";
+$user = "joomlauser";
+$password = "Linux20!";
 
 try {
     $conn = new PDO("pgsql:host=$host;dbname=$dbname", $user, $password);
