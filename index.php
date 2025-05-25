@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Aurora Boutique</title>
-  <link href="src/tailwind.css" rel="stylesheet">
+  <link href="css/tailwind.css" rel="stylesheet">
 </head>
 <body class="bg-pink-50 font-sans">
 
