@@ -21,20 +21,20 @@ if (isset($_POST['login'])) {
             $_SESSION['tipo'] = $resultado['tipo'];
 
             switch ($resultado['tipo']) {
-                case 'cliente':
-                    header("Location: views/cliente/cliente.php");
-                    exit;
-                case 'admin':
-                    header("Location: views/admin/admin.php");
-                    exit;
-                case 'envios':
-                    header("Location: views/envios/envios.php");
-                    exit;
-                default:
-                    echo "Tipo de usuario desconocido.";
-                    session_destroy();
-                    exit;
-            }
+    case 'cliente':
+        header("Location: index.php");
+        exit;
+    case 'admin':
+        header("Location: views/admin/admin.php");
+        exit;
+    case 'envios':
+        header("Location: views/envios/envios.php");
+        exit;
+    default:
+        echo "Tipo de usuario desconocido.";
+        session_destroy();
+        exit;
+}
         } else {
             echo "<p style='color:red;'>❌ Usuario o contraseña incorrectos.</p>";
         }

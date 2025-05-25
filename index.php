@@ -9,18 +9,19 @@
 <body class="bg-slate-50 text-gray-800 font-sans">
 
   <!-- Navbar -->
-  <nav class="flex justify-between items-center px-8 py-5 bg-slate-900 shadow-md">
-    <div class="text-3xl font-bold text-yellow-400 tracking-tight">Aurora Boutique</div>
-    <div class="space-x-6">
-      <?php if (isset($_SESSION['usuario'])): ?>
-        <span class="text-white font-medium">👤 <?php echo $_SESSION['usuario']; ?></span>
-        <a href="logout.php" class="text-yellow-400 hover:underline">Cerrar sesión</a>
-      <?php else: ?>
-        <a href="login.php" class="text-yellow-400 font-semibold hover:underline">Iniciar sesión</a>
-      <?php endif; ?>
-      <a href="#" class="text-white text-lg hover:text-yellow-300">🛍️ Carrito</a>
-    </div>
-  </nav>
+  <nav class="flex justify-between items-center px-8 py-4 bg-slate-900 shadow-md">
+  <div class="text-3xl font-bold text-yellow-400 tracking-tight">Aurora Boutique</div>
+  <div class="space-x-6">
+    <?php if (isset($_SESSION['usuario'])): ?>
+      <span class="text-white font-medium">👤 <?php echo $_SESSION['usuario']; ?></span>
+      <a href="logout.php" class="text-yellow-400 hover:underline">Cerrar sesión</a>
+    <?php else: ?>
+      <a href="login.php" class="text-yellow-400 font-semibold hover:underline">Iniciar sesión</a>
+    <?php endif; ?>
+    <a href="#" class="text-white text-lg hover:text-yellow-300">🛍️ Carrito</a>
+  </div>
+</nav>
+
 
   <!-- Hero Section -->
   <section class="bg-gradient-to-r from-slate-800 to-slate-700 text-center text-white py-20 px-6">
