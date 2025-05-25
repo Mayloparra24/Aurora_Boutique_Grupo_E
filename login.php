@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Login</title>
-  <link href="src/tailwind.css" rel="stylesheet">
+  <link href="css/tailwind.css" rel="stylesheet">
 </head>
 <body class="flex items-center justify-center h-screen bg-gray-100">
   <form method="POST" action="router.php" class="bg-white p-6 rounded shadow-md w-96">

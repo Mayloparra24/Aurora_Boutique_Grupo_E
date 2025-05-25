@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Admin</title>
-  <link href="../../src/tailwind.css" rel="stylesheet">
+  <link href="css/tailwind.css" rel="stylesheet">
 </head>
 <body class="bg-gray-100 p-6">
   <h1 class="text-3xl font-bold mb-4">Panel de Administrador</h1>
