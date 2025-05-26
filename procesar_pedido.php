@@ -16,6 +16,29 @@ $metodo = $_POST['metodopago'];
 try {
     $conn->beginTransaction();
 
+    // Verificar si aplica descuento
+    $stmt = $conn->prepare("
+        SELECT SUM(d.subtotal) AS total_compras
+        FROM modelo.pedido p
+        JOIN modelo.detallepedido d ON p.id_pedido = d.id_pedido
+        WHERE p.id_cliente = :cliente
+          AND p.fecha_compra >= CURRENT_DATE - INTERVAL '6 months'
+    ");
+    $stmt->execute([':cliente' => $usuario_id]);
+    $result = $stmt->fetch(PDO::FETCH_ASSOC);
+    $total_compras = $result['total_compras'] ?? 0;
+
+    // Calcular total del pedido
+    $total = 0;
+    foreach ($carrito as $item) {
+        $total += $item['precio'] * $item['cantidad'];
+    }
+
+    // Aplicar 15% de descuento si cumple condición
+    if ($total_compras >= 200000) {
+        $total *= 0.85;
+    }
+
     // Insertar pedido
     $stmt = $conn->prepare("INSERT INTO modelo.pedido (id_cliente, id_empleado_responsable, id_barrio_entrega, id_estadopedido, fecha_compra, direccion_detallada)
                             VALUES (:cliente, NULL, :barrio, 2, CURRENT_DATE, :direccion) RETURNING id_pedido");
@@ -42,7 +65,6 @@ try {
     }
 
     // Insertar transacción
-    $total = array_sum(array_map(fn($p) => $p['precio'] * $p['cantidad'], $carrito));
     $stmt = $conn->prepare("INSERT INTO modelo.transaccion (id_pedido, id_metodopago, montopagado)
                             VALUES (:pedido, :metodo, :total)");
     $stmt->execute([

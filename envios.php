@@ -32,6 +32,9 @@ $estados = $conn->query("SELECT id_estadopedido, estado FROM modelo.estadopedido
   <link href="css/tailwind.css" rel="stylesheet">
 </head>
 <body class="bg-gray-50 p-6">
+  <div class="text-right mb-6">
+  <a href="../logout.php" class="text-sm text-blue-600 hover:underline">🔒 Cerrar sesión</a>
+</div>
   <h1 class="text-3xl font-bold mb-6">📦 Pedidos asignados</h1>
 
   <?php foreach ($pedidos as $p): ?>

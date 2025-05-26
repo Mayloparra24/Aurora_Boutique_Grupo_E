@@ -6,6 +6,19 @@ if (!isset($_SESSION['usuario']) || $_SESSION['tipo'] !== 'cliente') {
 }
 include("db/conexion.php");
 $paises = $conn->query("SELECT id_pais, nombre FROM modelo.catalogo_pais")->fetchAll(PDO::FETCH_ASSOC);
+
+// Verificar si el cliente recibe el 15% de descuento
+$id_usuario = $_SESSION['id_usuario'];
+$stmt = $conn->prepare("
+  SELECT SUM(d.subtotal) AS total_compras
+  FROM modelo.pedido p
+  JOIN modelo.detallepedido d ON p.id_pedido = d.id_pedido
+  WHERE p.id_cliente = :id
+    AND p.fecha_compra >= CURRENT_DATE - INTERVAL '6 months'
+");
+$stmt->execute([':id' => $id_usuario]);
+$data = $stmt->fetch(PDO::FETCH_ASSOC);
+$aplica_descuento = ($data['total_compras'] ?? 0) >= 200000;
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -16,6 +29,12 @@ $paises = $conn->query("SELECT id_pais, nombre FROM modelo.catalogo_pais")->fetc
 </head>
 <body class="bg-slate-100 text-gray-800 p-6">
   <h1 class="text-3xl font-bold mb-6 text-center">Confirmar y Finalizar Pedido</h1>
+
+  <?php if ($aplica_descuento): ?>
+    <div class="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-800 p-4 mb-6 rounded">
+      🎉 ¡Felicidades! Has sido un cliente fiel. Recibís un <strong>15% de descuento</strong> por tus compras en los últimos 6 meses.
+    </div>
+  <?php endif; ?>
 
   <form action="procesar_pedido.php" method="POST" class="max-w-3xl mx-auto bg-white p-6 rounded shadow space-y-6">
     <h2 class="text-xl font-semibold mb-4">Dirección de entrega</h2>
@@ -55,15 +74,29 @@ $paises = $conn->query("SELECT id_pais, nombre FROM modelo.catalogo_pais")->fetc
   <script>
     const carrito = JSON.parse(localStorage.getItem("carrito") || "[]");
     document.getElementById("carrito_json").value = JSON.stringify(carrito);
+
     const resumen = document.getElementById("resumen-carrito");
     let total = 0;
+
+    const aplicaDescuento = <?= $aplica_descuento ? 'true' : 'false' ?>;
+
     resumen.innerHTML = carrito.map(p => {
-      total += p.precio * p.cantidad;
+      const subtotal = p.precio * p.cantidad;
+      total += subtotal;
       return `<div class='flex justify-between border-b py-2'>
                 <span>${p.nombre} x${p.cantidad}</span>
-                <span>₡${(p.precio * p.cantidad).toFixed(2)}</span>
+                <span>₡${subtotal.toFixed(2)}</span>
               </div>`;
-    }).join('') + `<div class='text-right font-bold mt-2'>Total: ₡${total.toFixed(2)}</div>`;
+    }).join('');
+
+    if (aplicaDescuento) {
+      const totalConDescuento = total * 0.85;
+      resumen.innerHTML += `
+        <div class='text-right mt-2 text-sm text-green-600'>15% de descuento aplicado</div>
+        <div class='text-right font-bold text-lg'>Total: ₡${totalConDescuento.toFixed(2)}</div>`;
+    } else {
+      resumen.innerHTML += `<div class='text-right font-bold text-lg mt-2'>Total: ₡${total.toFixed(2)}</div>`;
+    }
 
     function cargar(destino, origen, tipo) {
       origen.addEventListener("change", () => {

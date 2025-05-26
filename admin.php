@@ -32,7 +32,9 @@ $empleados = $conn->query("
   <link href="css/tailwind.css" rel="stylesheet">
 </head>
 <body class="bg-gray-100 p-6">
-
+<div class="text-right mb-6">
+  <a href="../logout.php" class="text-sm text-blue-600 hover:underline">🔒 Cerrar sesión</a>
+</div>
   <h1 class="text-3xl font-bold mb-6">📦 Pedidos en revisión</h1>
 
   <?php if (isset($_GET['mensaje']) && $_GET['mensaje'] === 'empleado_ok'): ?>
@@ -84,6 +86,5 @@ $empleados = $conn->query("
       <button type="submit" class="bg-blue-600 hover:bg-blue-500 text-white px-6 py-2 rounded">Registrar empleado</button>
     </div>
   </form>
-
 </body>
 </html>
