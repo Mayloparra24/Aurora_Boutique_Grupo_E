@@ -8,9 +8,12 @@
   <style>
     #contador-carrito {
       font-weight: bold;
-      min-width: 1.5rem;
-      display: inline-block;
-      text-align: center;
+    }
+    #ventana-carrito {
+      position: fixed;
+      top: 4.5rem;
+      right: 2rem;
+      width: 20rem;
     }
   </style>
   <script>
@@ -69,25 +72,28 @@
       <?php else: ?>
         <a href="login.php" class="text-yellow-400 font-semibold hover:underline">Iniciar sesión</a>
       <?php endif; ?>
-      <button onclick="toggleCarrito()" class="text-white text-lg hover:text-yellow-300 relative">
-        🛍️ Carrito <span id="contador-carrito" class="ml-1 inline-block bg-yellow-400 text-slate-900 px-2 py-0.5 rounded-full text-sm">0</span>
-      </button>
-
-      <!-- Ventana carrito (reposicionada y oculta inicialmente) -->
-      <div id="ventana-carrito" class="absolute right-0 mt-2 w-80 bg-white shadow-lg z-50 p-4 rounded hidden">
-        <div class="flex justify-between items-center mb-4">
-          <h2 class="text-xl font-bold text-slate-800">Tu Carrito</h2>
-          <button onclick="toggleCarrito()" class="text-slate-500 text-xl">✖</button>
-        </div>
-        <div id="lista-carrito" class="mb-4 max-h-60 overflow-y-auto"></div>
-        <div class="text-right font-bold text-lg text-slate-700 mb-4">Total: <span id="total-general">₡0.00</span></div>
-        <div class="flex justify-between">
-          <button onclick="vaciarCarrito()" class="bg-red-500 hover:bg-red-400 text-white px-4 py-2 rounded">Vaciar</button>
-          <button class="bg-green-500 hover:bg-green-400 text-white px-4 py-2 rounded">Realizar Pedido</button>
-        </div>
+      <div class="inline-block relative">
+        <button onclick="toggleCarrito()" class="text-white text-lg hover:text-yellow-300 relative">
+          🛍️ Carrito
+          <span id="contador-carrito" class="absolute top-[-8px] right-[-10px] bg-yellow-400 text-slate-900 w-5 h-5 text-xs flex items-center justify-center rounded-full">0</span>
+        </button>
       </div>
     </div>
   </nav>
+
+  <!-- Ventana carrito flotante -->
+  <div id="ventana-carrito" class="hidden bg-white shadow-lg z-50 p-4 rounded">
+    <div class="flex justify-between items-center mb-4">
+      <h2 class="text-xl font-bold text-slate-800">Tu Carrito</h2>
+      <button onclick="toggleCarrito()" class="text-slate-500 text-xl">✖</button>
+    </div>
+    <div id="lista-carrito" class="mb-4 max-h-60 overflow-y-auto"></div>
+    <div class="text-right font-bold text-lg text-slate-700 mb-4">Total: <span id="total-general">₡0.00</span></div>
+    <div class="flex justify-between">
+      <button onclick="vaciarCarrito()" class="bg-red-500 hover:bg-red-400 text-white px-4 py-2 rounded">Vaciar</button>
+      <button class="bg-green-500 hover:bg-green-400 text-white px-4 py-2 rounded">Realizar Pedido</button>
+    </div>
+  </div>
 
   <section class="bg-gradient-to-r from-slate-800 to-slate-700 text-center text-white py-20 px-6">
     <h1 class="text-5xl font-extrabold mb-4">Moda con esencia</h1>
@@ -130,4 +136,5 @@
   </footer>
 </body>
 </html>
+
 
