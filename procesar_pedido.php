@@ -27,21 +27,16 @@ try {
     $stmt->execute([':cliente' => $usuario_id]);
     $result = $stmt->fetch(PDO::FETCH_ASSOC);
     $total_compras = $result['total_compras'] ?? 0;
-
-    // Calcular total del pedido
-    $total = 0;
-    foreach ($carrito as $item) {
-        $total += $item['precio'] * $item['cantidad'];
-    }
-
-    // Aplicar 15% de descuento si cumple condición
-    if ($total_compras >= 200000) {
-        $total *= 0.85;
-    }
+    $aplica_descuento = $total_compras >= 200000;
 
     // Insertar pedido
-    $stmt = $conn->prepare("INSERT INTO modelo.pedido (id_cliente, id_empleado_responsable, id_barrio_entrega, id_estadopedido, fecha_compra, direccion_detallada)
-                            VALUES (:cliente, NULL, :barrio, 2, CURRENT_DATE, :direccion) RETURNING id_pedido");
+    $stmt = $conn->prepare("
+        INSERT INTO modelo.pedido (
+            id_cliente, id_empleado_responsable, id_barrio_entrega, id_estadopedido, fecha_compra, direccion_detallada
+        ) VALUES (
+            :cliente, NULL, :barrio, 2, CURRENT_DATE, :direccion
+        ) RETURNING id_pedido
+    ");
     $stmt->execute([
         ":cliente" => $usuario_id,
         ":barrio" => $id_barrio,
@@ -50,23 +45,38 @@ try {
     $pedido = $stmt->fetch(PDO::FETCH_ASSOC);
     $id_pedido = $pedido['id_pedido'];
 
-    // Insertar detalles
+    // Insertar detalles y calcular total real
+    $total = 0;
     foreach ($carrito as $item) {
-        $subtotal = $item['precio'] * $item['cantidad'];
-        $stmt = $conn->prepare("INSERT INTO modelo.detallepedido (id_pedido, id_producto, cantidad, precio_unitario, subtotal)
-                                VALUES (:pedido, :producto, :cant, :precio, :sub)");
+        $precio_unitario = $item['precio'];
+        $cantidad = $item['cantidad'];
+        $subtotal = $precio_unitario * $cantidad;
+
+        // Aplicar descuento si corresponde
+        if ($aplica_descuento) {
+            $subtotal *= 0.85;
+        }
+
+        $total += $subtotal;
+
+        $stmt = $conn->prepare("
+            INSERT INTO modelo.detallepedido (id_pedido, id_producto, cantidad, precio_unitario, subtotal)
+            VALUES (:pedido, :producto, :cant, :precio, :sub)
+        ");
         $stmt->execute([
             ":pedido" => $id_pedido,
             ":producto" => $item['id'],
-            ":cant" => $item['cantidad'],
-            ":precio" => $item['precio'],
+            ":cant" => $cantidad,
+            ":precio" => $precio_unitario,
             ":sub" => $subtotal
         ]);
     }
 
-    // Insertar transacción
-    $stmt = $conn->prepare("INSERT INTO modelo.transaccion (id_pedido, id_metodopago, montopagado)
-                            VALUES (:pedido, :metodo, :total)");
+    // Insertar transacción con total ajustado
+    $stmt = $conn->prepare("
+        INSERT INTO modelo.transaccion (id_pedido, id_metodopago, montopagado)
+        VALUES (:pedido, :metodo, :total)
+    ");
     $stmt->execute([
         ":pedido" => $id_pedido,
         ":metodo" => $metodo,
