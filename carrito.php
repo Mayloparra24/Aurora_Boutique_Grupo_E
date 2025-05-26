@@ -15,10 +15,9 @@
     <button onclick="vaciarCarrito()" class="bg-red-500 hover:bg-red-400 text-white px-4 py-2 rounded">
       Vaciar
     </button>
-    <button onclick="realizarPedido()" class="bg-green-500 hover:bg-green-400 text-white px-4 py-2 rounded">
+    <button onclick="window.location.href='finalizar_pedido.php'"
+            class="bg-green-500 hover:bg-green-400 text-white px-4 py-2 rounded">
       Realizar Pedido
     </button>
   </div>
 </div>
-
-

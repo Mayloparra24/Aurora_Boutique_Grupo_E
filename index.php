@@ -17,9 +17,13 @@
 <!-- Navbar -->
 <nav class="flex justify-between items-center px-8 py-4 bg-slate-900 shadow-md relative">
   <div class="text-3xl font-bold text-yellow-400 tracking-tight">Aurora Boutique</div>
-  <div class="space-x-6 relative">
+  <div class="space-x-4 flex items-center">
     <?php if (isset($_SESSION['usuario'])): ?>
       <span class="text-white font-medium">👤 <?php echo $_SESSION['usuario']; ?></span>
+      <button onclick="togglePedidos()"
+              class="bg-white text-slate-900 font-semibold px-3 py-1 rounded hover:bg-yellow-300 transition">
+        🧾 Ver mis pedidos
+      </button>
       <a href="logout.php" class="text-yellow-400 hover:underline">Cerrar sesión</a>
     <?php else: ?>
       <a href="login.php" class="text-yellow-400 font-semibold hover:underline">Iniciar sesión</a>
@@ -71,7 +75,7 @@
   <?php endwhile; ?>
 </section>
 
-<!-- Pedido OK toast -->
+<!-- Toast mensaje -->
 <?php if (isset($_GET['mensaje']) && $_GET['mensaje'] === 'pedido_ok'): ?>
   <div id="toast" class="fixed top-6 right-6 bg-green-500 text-white px-6 py-3 rounded shadow-lg transition-opacity">
     ✅ Tu pedido ha sido realizado
@@ -83,50 +87,51 @@
   </script>
 <?php endif; ?>
 
-<!-- Ver pedidos -->
-<?php if (isset($_SESSION['usuario']) && $_SESSION['tipo'] === 'cliente'): ?>
-<section class="p-10 bg-white mt-6 shadow rounded max-w-5xl mx-auto">
-  <h2 class="text-2xl font-bold mb-4">🧾 Tus pedidos realizados</h2>
-  <table class="w-full border text-left text-sm">
-    <thead>
-      <tr class="bg-slate-200 text-slate-700">
-        <th class="p-2"># Pedido</th>
-        <th class="p-2">Fecha</th>
-        <th class="p-2">Estado</th>
-        <th class="p-2">Total</th>
-      </tr>
-    </thead>
-    <tbody>
-      <?php
-      $stmt = $conn->prepare("
-        SELECT p.id_pedido, p.fecha_compra, e.estado, SUM(d.subtotal) AS total
-        FROM modelo.pedido p
-        JOIN modelo.estadopedido e ON p.id_estadopedido = e.id_estadopedido
-        JOIN modelo.detallepedido d ON p.id_pedido = d.id_pedido
-        WHERE p.id_cliente = (
-          SELECT id_cliente FROM modelo.usuario WHERE id_usuario = :uid
-        )
-        GROUP BY p.id_pedido, p.fecha_compra, e.estado
-        ORDER BY p.fecha_compra DESC
-      ");
-      $stmt->execute([':uid' => $_SESSION['id_usuario']]);
-      $pedidos = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-      if (count($pedidos) === 0): ?>
-        <tr><td colspan="4" class="p-4 text-center text-gray-500">No tenés pedidos aún.</td></tr>
-      <?php else:
-        foreach ($pedidos as $p): ?>
-          <tr class="border-t hover:bg-gray-50">
-            <td class="p-2 font-mono"><?= $p['id_pedido'] ?></td>
-            <td class="p-2"><?= $p['fecha_compra'] ?></td>
-            <td class="p-2"><?= $p['estado'] ?></td>
-            <td class="p-2">₡<?= number_format($p['total'], 2) ?></td>
-          </tr>
-      <?php endforeach; endif; ?>
-    </tbody>
-  </table>
-</section>
-<?php endif; ?>
+<!-- Modal Pedidos -->
+<div id="modal-pedidos" class="fixed inset-0 bg-black bg-opacity-40 z-[9998] hidden justify-center items-start pt-20">
+  <div class="bg-white rounded-lg shadow-lg w-full max-w-3xl max-h-[80vh] overflow-auto p-6 relative">
+    <button onclick="togglePedidos()" class="absolute top-4 right-4 text-gray-500 text-xl">✖</button>
+    <h2 class="text-2xl font-bold mb-4">🧾 Pedidos realizados</h2>
+    <table class="w-full border text-left text-sm">
+      <thead class="bg-slate-200">
+        <tr>
+          <th class="p-2"># Pedido</th>
+          <th class="p-2">Fecha</th>
+          <th class="p-2">Estado</th>
+          <th class="p-2">Total</th>
+        </tr>
+      </thead>
+      <tbody>
+        <?php
+        if (isset($_SESSION['id_usuario'])):
+          $stmt = $conn->prepare("
+            SELECT p.id_pedido, p.fecha_compra, e.estado, SUM(d.subtotal) AS total
+            FROM modelo.pedido p
+            JOIN modelo.estadopedido e ON p.id_estadopedido = e.id_estadopedido
+            JOIN modelo.detallepedido d ON p.id_pedido = d.id_pedido
+            WHERE p.id_cliente = (
+              SELECT id_cliente FROM modelo.usuario WHERE id_usuario = :uid
+            )
+            GROUP BY p.id_pedido, p.fecha_compra, e.estado
+            ORDER BY p.fecha_compra DESC
+          ");
+          $stmt->execute([':uid' => $_SESSION['id_usuario']]);
+          $pedidos = $stmt->fetchAll(PDO::FETCH_ASSOC);
+          if (count($pedidos) === 0): ?>
+            <tr><td colspan="4" class="p-4 text-center text-gray-500">No tenés pedidos aún.</td></tr>
+          <?php else:
+            foreach ($pedidos as $p): ?>
+              <tr class="border-t hover:bg-gray-50">
+                <td class="p-2 font-mono"><?= $p['id_pedido'] ?></td>
+                <td class="p-2"><?= $p['fecha_compra'] ?></td>
+                <td class="p-2"><?= $p['estado'] ?></td>
+                <td class="p-2">₡<?= number_format($p['total'], 2) ?></td>
+              </tr>
+        <?php endforeach; endif; endif; ?>
+      </tbody>
+    </table>
+  </div>
+</div>
 
 <!-- Footer -->
 <footer class="bg-slate-900 text-slate-400 py-6 text-center mt-10">
@@ -186,6 +191,12 @@
 
   function cerrarCarrito() {
     document.getElementById("contenedor-carrito").innerHTML = "";
+  }
+
+  function togglePedidos() {
+    const modal = document.getElementById("modal-pedidos");
+    modal.classList.toggle("hidden");
+    modal.classList.toggle("flex");
   }
 
   window.onload = () => {
