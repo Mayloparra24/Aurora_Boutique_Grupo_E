@@ -25,10 +25,10 @@ if (isset($_POST['login'])) {
         header("Location: index.php");
         exit;
     case 'admin':
-        header("Location: views/admin/admin.php");
+        header("Location: admin.php");
         exit;
     case 'envios':
-        header("Location: views/envios/envios.php");
+        header("Location: envios.php");
         exit;
     default:
         echo "Tipo de usuario desconocido.";

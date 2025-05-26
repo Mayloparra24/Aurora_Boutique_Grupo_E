@@ -17,7 +17,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     ':id' => $id_pedido
   ]);
 
-  header("Location: envios/admin.php");
+  header("Location: admin.php");
   exit;
 }
 ?>
