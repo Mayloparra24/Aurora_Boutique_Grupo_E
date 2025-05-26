@@ -65,8 +65,7 @@
     <?php endwhile; ?>
   </section>
 
-  <!-- Carrito dinámico -->
-  <div id="contenedor-carrito" class="fixed z-50"></div>
+
 
   <!-- Footer -->
   <footer class="bg-slate-900 text-slate-400 py-6 text-center">
@@ -134,6 +133,7 @@
       alert("Aquí se podrá enviar el carrito al backend.");
     }
   </script>
-
+ <!-- Carrito dinámico -->
+  <div id="contenedor-carrito" class="fixed z-50"></div>
 </body>
 </html>
