@@ -1,5 +1,6 @@
 <?php session_start(); ?>
-<div class="fixed top-20 right-8 z-50 w-80 bg-white shadow-lg p-4 rounded border border-slate-200">
+<div class="fixed top-20 right-8 w-80 bg-white shadow-2xl p-4 rounded border border-slate-200"
+     style="z-index:9999;">
   <div class="flex justify-between items-center mb-4">
     <h2 class="text-xl font-bold text-slate-800">Tu Carrito</h2>
     <button onclick="cerrarCarrito()" class="text-slate-500 text-xl">✖</button>
