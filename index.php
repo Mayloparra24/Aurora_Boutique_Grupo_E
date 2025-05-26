@@ -5,94 +5,10 @@
   <meta charset="UTF-8">
   <title>Aurora Boutique</title>
   <link href="css/tailwind.css" rel="stylesheet">
-  <style>
-    #contador-carrito {
-      font-weight: bold;
-    }
-    #ventana-carrito {
-      transition: transform 0.3s ease, opacity 0.3s ease;
-    }
-    #ventana-carrito.hidden {
-      transform: translateY(-10px);
-      opacity: 0;
-      pointer-events: none;
-    }
-    #ventana-carrito.flex {
-      transform: translateY(0);
-      opacity: 1;
-      pointer-events: auto;
-    }
-    #carrito-toggle.animate {
-      animation: bounce 0.4s ease;
-    }
-    @keyframes bounce {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.2); }
-      100% { transform: scale(1); }
-    }
-  </style>
-  <script>
-    let carrito = [];
-
-    function agregarAlCarrito(id, nombre, precio) {
-      const existente = carrito.find(p => p.id === id);
-      if (existente) {
-        existente.cantidad++;
-      } else {
-        carrito.push({ id, nombre, precio, cantidad: 1 });
-      }
-      actualizarCarrito();
-    }
-
-    function actualizarCarrito() {
-      const carritoIcon = document.getElementById("contador-carrito");
-      const totalItems = carrito.reduce((sum, item) => sum + item.cantidad, 0);
-      carritoIcon.innerText = totalItems;
-
-      const lista = document.getElementById("lista-carrito");
-      lista.innerHTML = "";
-
-      let totalGeneral = 0;
-      carrito.forEach(prod => {
-        const total = prod.precio * prod.cantidad;
-        totalGeneral += total;
-        const item = `<div class='border-b py-2 flex justify-between'>
-                        <span>${prod.nombre} x${prod.cantidad}</span>
-                        <span>₡${total.toFixed(2)}</span>
-                      </div>`;
-        lista.innerHTML += item;
-      });
-
-      document.getElementById("total-general").innerText = "₡" + totalGeneral.toFixed(2);
-    }
-
-    function toggleCarrito() {
-      const carritoVentana = document.getElementById("ventana-carrito");
-      const toggleBtn = document.getElementById("carrito-toggle");
-
-      toggleBtn.classList.add("animate");
-      setTimeout(() => toggleBtn.classList.remove("animate"), 400);
-
-      carritoVentana.classList.toggle("hidden");
-      carritoVentana.classList.toggle("flex");
-    }
-
-    function vaciarCarrito() {
-      carrito = [];
-      actualizarCarrito();
-    }
-
-    document.addEventListener("click", function(event) {
-      const carritoVentana = document.getElementById("ventana-carrito");
-      const toggleBtn = document.getElementById("carrito-toggle");
-      if (!carritoVentana.contains(event.target) && !toggleBtn.contains(event.target)) {
-        carritoVentana.classList.add("hidden");
-        carritoVentana.classList.remove("flex");
-      }
-    });
-  </script>
 </head>
 <body class="bg-slate-50 text-gray-800 font-sans">
+
+  <!-- Navbar -->
   <nav class="flex justify-between items-center px-8 py-4 bg-slate-900 shadow-md relative">
     <div class="text-3xl font-bold text-yellow-400 tracking-tight">Aurora Boutique</div>
     <div class="space-x-6 relative">
@@ -103,7 +19,7 @@
         <a href="login.php" class="text-yellow-400 font-semibold hover:underline">Iniciar sesión</a>
       <?php endif; ?>
       <div class="inline-block relative">
-        <button id="carrito-toggle" onclick="toggleCarrito()" class="text-white text-lg hover:text-yellow-300 relative">
+        <button id="carrito-toggle" onclick="cargarCarrito()" class="text-white text-lg hover:text-yellow-300 relative">
           🛍️ Carrito
           <span id="contador-carrito" class="absolute top-[-8px] right-[-10px] bg-yellow-400 text-slate-900 w-5 h-5 text-xs flex items-center justify-center rounded-full">0</span>
         </button>
@@ -111,20 +27,7 @@
     </div>
   </nav>
 
-  <!-- Ventana carrito -->
-  <div id="ventana-carrito" class="hidden fixed top-20 right-8 w-80 bg-white shadow-xl z-50 p-4 rounded">
-    <div class="flex justify-between items-center mb-4">
-      <h2 class="text-xl font-bold text-slate-800">Tu Carrito</h2>
-      <button onclick="toggleCarrito()" class="text-slate-500 text-xl">✖</button>
-    </div>
-    <div id="lista-carrito" class="mb-4 max-h-60 overflow-y-auto"></div>
-    <div class="text-right font-bold text-lg text-slate-700 mb-4">Total: <span id="total-general">₡0.00</span></div>
-    <div class="flex justify-between">
-      <button onclick="vaciarCarrito()" class="bg-red-500 hover:bg-red-400 text-white px-4 py-2 rounded">Vaciar</button>
-      <button class="bg-green-500 hover:bg-green-400 text-white px-4 py-2 rounded">Realizar Pedido</button>
-    </div>
-  </div>
-
+  <!-- Hero Section -->
   <section class="bg-gradient-to-r from-slate-800 to-slate-700 text-center text-white py-20 px-6">
     <h1 class="text-5xl font-extrabold mb-4">Moda con esencia</h1>
     <p class="text-lg text-slate-200 mb-6">Elegancia, estilo y autenticidad en cada prenda.</p>
@@ -133,6 +36,7 @@
     </a>
   </section>
 
+  <!-- Colección -->
   <section id="coleccion" class="p-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 bg-slate-100">
     <?php
     $sql = "SELECT p.id_producto, p.nombre, p.descripcion, p.precio, p.stock,
@@ -161,8 +65,75 @@
     <?php endwhile; ?>
   </section>
 
+  <!-- Carrito dinámico -->
+  <div id="contenedor-carrito" class="fixed z-50"></div>
+
+  <!-- Footer -->
   <footer class="bg-slate-900 text-slate-400 py-6 text-center">
     © <?php echo date("Y"); ?> Aurora Boutique. Todos los derechos reservados.
   </footer>
+
+  <!-- Scripts -->
+  <script>
+    let carrito = [];
+
+    function agregarAlCarrito(id, nombre, precio) {
+      const existente = carrito.find(p => p.id === id);
+      if (existente) {
+        existente.cantidad++;
+      } else {
+        carrito.push({ id, nombre, precio, cantidad: 1 });
+      }
+      actualizarCarrito();
+    }
+
+    function actualizarCarrito() {
+      const contador = document.getElementById("contador-carrito");
+      const totalItems = carrito.reduce((sum, item) => sum + item.cantidad, 0);
+      if (contador) contador.innerText = totalItems;
+
+      const lista = document.getElementById("lista-carrito");
+      const total = document.getElementById("total-general");
+      if (!lista || !total) return;
+
+      lista.innerHTML = "";
+      let totalGeneral = 0;
+
+      carrito.forEach(item => {
+        const totalItem = item.precio * item.cantidad;
+        totalGeneral += totalItem;
+        lista.innerHTML += `
+          <div class='border-b py-2 flex justify-between'>
+            <span>${item.nombre} x${item.cantidad}</span>
+            <span>₡${totalItem.toFixed(2)}</span>
+          </div>`;
+      });
+
+      total.innerText = "₡" + totalGeneral.toFixed(2);
+    }
+
+    function vaciarCarrito() {
+      carrito = [];
+      actualizarCarrito();
+    }
+
+    function cargarCarrito() {
+      fetch("carrito.php")
+        .then(r => r.text())
+        .then(html => {
+          document.getElementById("contenedor-carrito").innerHTML = html;
+          actualizarCarrito();
+        });
+    }
+
+    function cerrarCarrito() {
+      document.getElementById("contenedor-carrito").innerHTML = "";
+    }
+
+    function realizarPedido() {
+      alert("Aquí se podrá enviar el carrito al backend.");
+    }
+  </script>
+
 </body>
 </html>
