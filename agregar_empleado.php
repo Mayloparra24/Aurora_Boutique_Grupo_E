@@ -15,12 +15,12 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
   try {
     // Insertar correo
-    $stmt = $conn->prepare("INSERT INTO modelo.correo_empleado (correo) VALUES (:correo) RETURNING id_correoe");
+    $stmt = $conn->prepare("INSERT INTO modelo.correo_empleado (correo) VALUES (:correo) RETURNING id_correoempleado");
     $stmt->execute([':correo' => $correo]);
     $id_correoe = $stmt->fetchColumn();
 
     // Insertar teléfono
-    $stmt = $conn->prepare("INSERT INTO modelo.telefono_empleado (telefono) VALUES (:telefono) RETURNING id_telefonoe");
+    $stmt = $conn->prepare("INSERT INTO modelo.telefono_empleado (telefono) VALUES (:telefono) RETURNING id_telefonoempleado");
     $stmt->execute([':telefono' => $telefono]);
     $id_telefonoe = $stmt->fetchColumn();
 
@@ -56,8 +56,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     header("Location: admin.php?mensaje=empleado_ok");
     exit;
+
   } catch (PDOException $e) {
     die("Error al agregar empleado: " . $e->getMessage());
   }
 }
 ?>
+
