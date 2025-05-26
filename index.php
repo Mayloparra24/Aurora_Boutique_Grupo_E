@@ -134,6 +134,6 @@
     }
   </script>
  <!-- Carrito dinámico -->
-  <div id="contenedor-carrito" class="fixed top-20 right-8 z-50"></div>
+ <div id="contenedor-carrito"></div>
 </body>
 </html>
