@@ -1,6 +1,6 @@
 <?php
 session_start();
-include("../db/conexion.php");
+include("db/conexion.php");
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $id_pedido = $_POST['id_pedido'];
@@ -17,7 +17,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     ':id' => $id_pedido
   ]);
 
-  header("Location: admin.php");
+  header("Location: envios/admin.php");
   exit;
 }
 ?>
