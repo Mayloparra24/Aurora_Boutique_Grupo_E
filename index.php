@@ -9,6 +9,27 @@
     #contador-carrito {
       font-weight: bold;
     }
+    #ventana-carrito {
+      transition: transform 0.3s ease, opacity 0.3s ease;
+    }
+    #ventana-carrito.hidden {
+      transform: translateY(-10px);
+      opacity: 0;
+      pointer-events: none;
+    }
+    #ventana-carrito.flex {
+      transform: translateY(0);
+      opacity: 1;
+      pointer-events: auto;
+    }
+    #carrito-toggle.animate {
+      animation: bounce 0.4s ease;
+    }
+    @keyframes bounce {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.2); }
+      100% { transform: scale(1); }
+    }
   </style>
   <script>
     let carrito = [];
@@ -47,19 +68,28 @@
 
     function toggleCarrito() {
       const carritoVentana = document.getElementById("ventana-carrito");
-      if (carritoVentana.classList.contains("hidden")) {
-        carritoVentana.classList.remove("hidden");
-        carritoVentana.classList.add("flex");
-      } else {
-        carritoVentana.classList.add("hidden");
-        carritoVentana.classList.remove("flex");
-      }
+      const toggleBtn = document.getElementById("carrito-toggle");
+
+      toggleBtn.classList.add("animate");
+      setTimeout(() => toggleBtn.classList.remove("animate"), 400);
+
+      carritoVentana.classList.toggle("hidden");
+      carritoVentana.classList.toggle("flex");
     }
 
     function vaciarCarrito() {
       carrito = [];
       actualizarCarrito();
     }
+
+    document.addEventListener("click", function(event) {
+      const carritoVentana = document.getElementById("ventana-carrito");
+      const toggleBtn = document.getElementById("carrito-toggle");
+      if (!carritoVentana.contains(event.target) && !toggleBtn.contains(event.target)) {
+        carritoVentana.classList.add("hidden");
+        carritoVentana.classList.remove("flex");
+      }
+    });
   </script>
 </head>
 <body class="bg-slate-50 text-gray-800 font-sans">
@@ -73,7 +103,7 @@
         <a href="login.php" class="text-yellow-400 font-semibold hover:underline">Iniciar sesión</a>
       <?php endif; ?>
       <div class="inline-block relative">
-        <button onclick="toggleCarrito()" class="text-white text-lg hover:text-yellow-300 relative">
+        <button id="carrito-toggle" onclick="toggleCarrito()" class="text-white text-lg hover:text-yellow-300 relative">
           🛍️ Carrito
           <span id="contador-carrito" class="absolute top-[-8px] right-[-10px] bg-yellow-400 text-slate-900 w-5 h-5 text-xs flex items-center justify-center rounded-full">0</span>
         </button>
@@ -81,8 +111,8 @@
     </div>
   </nav>
 
-  <!-- Ventana carrito flotante y superpuesta -->
-  <div id="ventana-carrito" class="hidden fixed top-20 right-8 w-80 bg-white shadow-xl z-50 p-4 rounded flex-col">
+  <!-- Ventana carrito -->
+  <div id="ventana-carrito" class="hidden fixed top-20 right-8 w-80 bg-white shadow-xl z-50 p-4 rounded">
     <div class="flex justify-between items-center mb-4">
       <h2 class="text-xl font-bold text-slate-800">Tu Carrito</h2>
       <button onclick="toggleCarrito()" class="text-slate-500 text-xl">✖</button>
