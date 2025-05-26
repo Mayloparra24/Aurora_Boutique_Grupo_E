@@ -41,7 +41,8 @@
     }
 
     function toggleCarrito() {
-      document.getElementById("ventana-carrito").classList.toggle("hidden");
+      const carritoVentana = document.getElementById("ventana-carrito");
+      carritoVentana.classList.toggle("hidden");
     }
 
     function vaciarCarrito() {
@@ -51,7 +52,7 @@
   </script>
 </head>
 <body class="bg-slate-50 text-gray-800 font-sans">
-  <nav class="flex justify-between items-center px-8 py-4 bg-slate-900 shadow-md">
+  <nav class="flex justify-between items-center px-8 py-4 bg-slate-900 shadow-md relative">
     <div class="text-3xl font-bold text-yellow-400 tracking-tight">Aurora Boutique</div>
     <div class="space-x-6">
       <?php if (isset($_SESSION['usuario'])): ?>
@@ -63,6 +64,20 @@
       <button onclick="toggleCarrito()" class="text-white text-lg hover:text-yellow-300 relative">
         🛍️ Carrito <span id="contador-carrito" class="ml-1 inline-block bg-yellow-400 text-slate-900 px-2 py-0.5 rounded-full text-sm">0</span>
       </button>
+    </div>
+
+    <!-- Ventana carrito (reposicionada) -->
+    <div id="ventana-carrito" class="absolute top-16 right-8 w-80 bg-white shadow-lg z-50 p-4 rounded hidden">
+      <div class="flex justify-between items-center mb-4">
+        <h2 class="text-xl font-bold text-slate-800">Tu Carrito</h2>
+        <button onclick="toggleCarrito()" class="text-slate-500 text-xl">✖</button>
+      </div>
+      <div id="lista-carrito" class="mb-4 max-h-60 overflow-y-auto"></div>
+      <div class="text-right font-bold text-lg text-slate-700 mb-4">Total: <span id="total-general">₡0.00</span></div>
+      <div class="flex justify-between">
+        <button onclick="vaciarCarrito()" class="bg-red-500 hover:bg-red-400 text-white px-4 py-2 rounded">Vaciar</button>
+        <button class="bg-green-500 hover:bg-green-400 text-white px-4 py-2 rounded">Realizar Pedido</button>
+      </div>
     </div>
   </nav>
 
@@ -101,20 +116,6 @@
       </div>
     <?php endwhile; ?>
   </section>
-
-  <!-- Ventana carrito -->
-  <div id="ventana-carrito" class="fixed top-0 right-0 w-full max-w-md h-full bg-white shadow-lg z-50 p-6 hidden overflow-y-auto">
-    <div class="flex justify-between items-center mb-4">
-      <h2 class="text-2xl font-bold text-slate-800">Tu Carrito</h2>
-      <button onclick="toggleCarrito()" class="text-slate-500 text-xl">✖</button>
-    </div>
-    <div id="lista-carrito" class="mb-4"></div>
-    <div class="text-right font-bold text-lg text-slate-700 mb-6">Total: <span id="total-general">₡0.00</span></div>
-    <div class="flex justify-between">
-      <button onclick="vaciarCarrito()" class="bg-red-500 hover:bg-red-400 text-white px-4 py-2 rounded">Vaciar</button>
-      <button class="bg-green-500 hover:bg-green-400 text-white px-4 py-2 rounded">Realizar Pedido</button>
-    </div>
-  </div>
 
   <footer class="bg-slate-900 text-slate-400 py-6 text-center">
     © <?php echo date("Y"); ?> Aurora Boutique. Todos los derechos reservados.

@@ -558,6 +558,10 @@ video {
   position: fixed;
 }
 
+.absolute {
+  position: absolute;
+}
+
 .relative {
   position: relative;
 }
@@ -568,6 +572,14 @@ video {
 
 .top-0 {
   top: 0px;
+}
+
+.right-8 {
+  right: 2rem;
+}
+
+.top-16 {
+  top: 4rem;
 }
 
 .z-50 {
@@ -635,12 +647,20 @@ video {
   height: 100%;
 }
 
+.max-h-60 {
+  max-height: 15rem;
+}
+
 .min-h-screen {
   min-height: 100vh;
 }
 
 .w-full {
   width: 100%;
+}
+
+.w-80 {
+  width: 20rem;
 }
 
 .max-w-md {
