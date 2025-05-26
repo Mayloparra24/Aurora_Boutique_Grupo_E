@@ -5,6 +5,12 @@
   <meta charset="UTF-8">
   <title>Aurora Boutique</title>
   <link href="css/tailwind.css" rel="stylesheet">
+  <style>
+  html, body {
+    overflow: visible !important;
+    position: static !important;
+  }
+</style>
 </head>
 <body class="bg-slate-50 text-gray-800 font-sans">
 
