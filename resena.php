@@ -131,19 +131,20 @@
                 <td class="p-2"><?= $p['estado'] ?></td>
                 <td class="p-2">₡<?= number_format($p['total'], 2) ?></td>
                 <td class="p-2">
-                  <?php if ($p['estado'] === 'Entregado'): ?>
-                    <?php if ($p['tiene_resena']): ?>
-                      <span class="text-green-600 font-semibold">✔ Reseña realizada</span>
-                    <?php else: ?>
-                      <a href="resena.php?id_pedido=<?= $p['id_pedido'] ?>"
-                         class="bg-blue-600 hover:bg-blue-500 text-white px-3 py-1 rounded text-sm font-semibold">
-                        ✍️ Dejar reseña
-                      </a>
-                    <?php endif; ?>
-                  <?php else: ?>
-                    <span class="text-gray-400 italic">No disponible</span>
-                  <?php endif; ?>
-                </td>
+  <?php if (trim(strtolower($p['estado'])) === 'entregado'): ?>
+    <?php if ($p['tiene_resena'] == true): ?>
+      <span class="text-green-600 font-semibold">✔ Reseña realizada</span>
+    <?php else: ?>
+      <a href="resena.php?id_pedido=<?= $p['id_pedido'] ?>"
+         class="bg-blue-600 hover:bg-blue-500 text-white px-3 py-1 rounded text-sm font-semibold">
+        ✍️ Dejar reseña
+      </a>
+    <?php endif; ?>
+  <?php else: ?>
+    <span class="text-gray-400 italic">No disponible</span>
+  <?php endif; ?>
+</td>
+
               </tr>
         <?php endforeach; endif; endif; ?>
       </tbody>
