@@ -35,10 +35,23 @@ $categorias = $conn->query("SELECT id_categoria, nombre_categoria FROM modelo.ca
   <meta charset="UTF-8">
   <title>Panel Admin - Aurora Boutique</title>
   <link href="css/tailwind.css" rel="stylesheet">
+  <script>
+    function toggleModal(id) {
+      document.getElementById(id).classList.toggle('hidden');
+      document.getElementById(id).classList.toggle('flex');
+    }
+  </script>
 </head>
 <body class="bg-gray-100 p-6">
 <div class="text-right mb-6">
   <a href="../logout.php" class="text-sm text-blue-600 hover:underline">🔒 Cerrar sesión</a>
+  <a href="facturacion.php" class="ml-4 text-sm text-purple-700 font-semibold hover:underline">📄 Ver facturación</a>
+</div>
+
+<div class="mb-6 space-x-4">
+  <button onclick="toggleModal('modal-clientes')" class="bg-sky-600 hover:bg-sky-500 text-white px-4 py-2 rounded">👥 CRUD Clientes</button>
+  <button onclick="toggleModal('modal-empleados')" class="bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2 rounded">👨‍💼 CRUD Empleados</button>
+  <button onclick="toggleModal('modal-productos')" class="bg-orange-600 hover:bg-orange-500 text-white px-4 py-2 rounded">🛍️ CRUD Productos</button>
 </div>
 
 <h1 class="text-3xl font-bold mb-6">📦 Pedidos en revisión</h1>
@@ -49,7 +62,6 @@ $categorias = $conn->query("SELECT id_categoria, nombre_categoria FROM modelo.ca
   </div>
 <?php endif; ?>
 
-<!-- Lista de pedidos -->
 <?php foreach ($pedidos as $p): ?>
   <form method="POST" action="verificar_pedido.php" class="bg-white rounded shadow p-4 mb-4 flex justify-between items-center">
     <div>
@@ -65,62 +77,34 @@ $categorias = $conn->query("SELECT id_categoria, nombre_categoria FROM modelo.ca
         <?php endforeach; ?>
       </select>
       <input type="hidden" name="id_pedido" value="<?= $p['id_pedido'] ?>">
-      <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-500">
-        ✔ Verificar
-      </button>
+      <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-500">✔ Verificar</button>
     </div>
   </form>
 <?php endforeach; ?>
 
-<!-- Agregar nuevo empleado -->
-<h2 class="text-2xl font-bold mt-10 mb-4">➕ Agregar nuevo empleado</h2>
-<form method="POST" action="agregar_empleado.php" class="bg-white shadow p-6 rounded grid grid-cols-1 md:grid-cols-2 gap-4">
-  <input name="nombre1" placeholder="Primer nombre" required class="border p-2 rounded">
-  <input name="nombre2" placeholder="Segundo nombre" class="border p-2 rounded">
-  <input name="apellido1" placeholder="Primer apellido" required class="border p-2 rounded">
-  <input name="apellido2" placeholder="Segundo apellido" class="border p-2 rounded">
-  <input name="correo" type="email" placeholder="Correo" required class="border p-2 rounded">
-  <input name="telefono" type="text" placeholder="Teléfono" required class="border p-2 rounded">
-  <select name="rol" required class="border p-2 rounded">
-    <option value="">-- Rol --</option>
-    <option value="1">Administrador</option>
-    <option value="2">PersonalEnvios</option>
-  </select>
-  <input name="usuario" placeholder="Nombre de usuario" required class="border p-2 rounded">
-  <input name="clave" type="password" placeholder="Contraseña" required class="border p-2 rounded">
-  <div class="md:col-span-2 text-right">
-    <button type="submit" class="bg-blue-600 hover:bg-blue-500 text-white px-6 py-2 rounded">Registrar empleado</button>
+<!-- CRUD modals -->
+<div id="modal-clientes" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 justify-center items-start overflow-auto pt-10">
+  <div class="bg-white max-w-4xl w-full mx-auto p-6 rounded-lg shadow-lg relative">
+    <button onclick="toggleModal('modal-clientes')" class="absolute top-3 right-3 text-gray-500 text-2xl">✖</button>
+    <h2 class="text-2xl font-bold mb-4">👥 Gestión de Clientes</h2>
+    <?php include("crud_clientes.php"); ?>
   </div>
-</form>
+</div>
 
-<!-- Agregar nuevo producto -->
-<h2 class="text-2xl font-bold mt-10 mb-4">🛍️ Agregar nuevo producto</h2>
-<form method="POST" action="agregar_producto.php" class="bg-white shadow p-6 rounded grid grid-cols-1 md:grid-cols-2 gap-4">
-  <input name="nombre" placeholder="Nombre del producto" required class="border p-2 rounded">
-  <textarea name="descripcion" placeholder="Descripción" required class="border p-2 rounded md:col-span-2"></textarea>
-  <input name="precio" type="number" placeholder="Precio ₡" step="0.01" required class="border p-2 rounded">
-  <input name="stock" type="number" placeholder="Cantidad en stock" required class="border p-2 rounded">
-  <select name="id_talla" required class="border p-2 rounded">
-    <option value="">-- Talla --</option>
-    <?php foreach ($tallas as $t): ?>
-      <option value="<?= $t['id_talla'] ?>"><?= $t['nombre_talla'] ?></option>
-    <?php endforeach; ?>
-  </select>
-  <select name="id_color" required class="border p-2 rounded">
-    <option value="">-- Color --</option>
-    <?php foreach ($colores as $c): ?>
-      <option value="<?= $c['id_color'] ?>"><?= $c['nombre_color'] ?></option>
-    <?php endforeach; ?>
-  </select>
-  <select name="id_categoria" required class="border p-2 rounded">
-    <option value="">-- Categoría --</option>
-    <?php foreach ($categorias as $cat): ?>
-      <option value="<?= $cat['id_categoria'] ?>"><?= $cat['nombre_categoria'] ?></option>
-    <?php endforeach; ?>
-  </select>
-  <div class="md:col-span-2 text-right">
-    <button type="submit" class="bg-purple-600 hover:bg-purple-500 text-white px-6 py-2 rounded">Agregar producto</button>
+<div id="modal-empleados" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 justify-center items-start overflow-auto pt-10">
+  <div class="bg-white max-w-4xl w-full mx-auto p-6 rounded-lg shadow-lg relative">
+    <button onclick="toggleModal('modal-empleados')" class="absolute top-3 right-3 text-gray-500 text-2xl">✖</button>
+    <h2 class="text-2xl font-bold mb-4">👨‍💼 Gestión de Empleados</h2>
+    <?php include("crud_empleados.php"); ?>
   </div>
-</form>
+</div>
+
+<div id="modal-productos" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 justify-center items-start overflow-auto pt-10">
+  <div class="bg-white max-w-4xl w-full mx-auto p-6 rounded-lg shadow-lg relative">
+    <button onclick="toggleModal('modal-productos')" class="absolute top-3 right-3 text-gray-500 text-2xl">✖</button>
+    <h2 class="text-2xl font-bold mb-4">🛍️ Gestión de Productos</h2>
+    <?php include("crud_productos.php"); ?>
+  </div>
+</div>
 </body>
 </html>

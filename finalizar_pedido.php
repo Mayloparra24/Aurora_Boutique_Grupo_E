@@ -66,9 +66,12 @@ $aplica_descuento = ($data['total_compras'] ?? 0) >= 200000;
     <div id="resumen-carrito" class="bg-gray-50 p-4 rounded border"></div>
 
     <input type="hidden" name="carrito_json" id="carrito_json">
-    <div class="mt-6 text-right">
-      <button type="submit" class="bg-green-600 hover:bg-green-500 text-white px-6 py-3 rounded font-bold">Pagar</button>
-    </div>
+    <div class="text-sm text-gray-500 mt-4">
+  ⚖️ Al confirmar tu pedido, aceptás que se emita una factura electrónica según la normativa vigente en Costa Rica (Resolución DGT-R-48-2016).
+</div>
+<div class="mt-6 text-right">
+  <button type="submit" class="bg-green-600 hover:bg-green-500 text-white px-6 py-3 rounded font-bold">Pagar</button>
+</div>
   </form>
 
   <script>

@@ -72,7 +72,7 @@ try {
         ]);
     }
 
-    // Insertar transacción con total ajustado
+    // Insertar transacción
     $stmt = $conn->prepare("
         INSERT INTO modelo.transaccion (id_pedido, id_metodopago, montopagado)
         VALUES (:pedido, :metodo, :total)
@@ -82,6 +82,10 @@ try {
         ":metodo" => $metodo,
         ":total" => $total
     ]);
+
+    // Generar factura automáticamente
+    $stmt = $conn->prepare("CALL modelo.generar_factura_por_pedido(:id_pedido)");
+    $stmt->execute([':id_pedido' => $id_pedido]);
 
     $conn->commit();
 

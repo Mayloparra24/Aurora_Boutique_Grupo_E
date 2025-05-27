@@ -7,47 +7,59 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
   $nombre2 = $_POST['nombre2'] ?? null;
   $apellido1 = $_POST['apellido1'];
   $apellido2 = $_POST['apellido2'] ?? null;
-  $correo = $_POST['correo'];
-  $telefono = $_POST['telefono'];
+  $correo1 = $_POST['correo'];
+  $correo2 = $_POST['correo2'] ?? null;
+  $telefono1 = $_POST['telefono'];
+  $telefono2 = $_POST['telefono2'] ?? null;
   $rol = $_POST['rol'];
   $usuario = $_POST['usuario'];
   $clave = $_POST['clave'];
 
   try {
-    // Insertar correo
-    $stmt = $conn->prepare("INSERT INTO modelo.correo_empleado (correo) VALUES (:correo) RETURNING id_correoempleado");
-    $stmt->execute([':correo' => $correo]);
-    $id_correoe = $stmt->fetchColumn();
+    // Insertar correos
+    $stmt = $conn->prepare("INSERT INTO modelo.correo_empleado (correo) VALUES (:c) RETURNING id_correoempleado");
+    $stmt->execute([':c' => $correo1]);
+    $id_c1 = $stmt->fetchColumn();
 
-    // Insertar teléfono
-    $stmt = $conn->prepare("INSERT INTO modelo.telefono_empleado (telefono) VALUES (:telefono) RETURNING id_telefonoempleado");
-    $stmt->execute([':telefono' => $telefono]);
-    $id_telefonoe = $stmt->fetchColumn();
+    if ($correo2) {
+      $stmt->execute([':c' => $correo2]);
+      $id_c2 = $stmt->fetchColumn();
+    }
 
-    // Insertar empleado
+    // Insertar teléfonos
+    $stmt = $conn->prepare("INSERT INTO modelo.telefono_empleado (telefono) VALUES (:t) RETURNING id_telefonoempleado");
+    $stmt->execute([':t' => $telefono1]);
+    $id_t1 = $stmt->fetchColumn();
+
+    if ($telefono2) {
+      $stmt->execute([':t' => $telefono2]);
+      $id_t2 = $stmt->fetchColumn();
+    }
+
+    // Usar el primer correo y teléfono en la tabla principal
     $stmt = $conn->prepare("
-      INSERT INTO modelo.empleado 
-        (nombre1, nombre2, apellido1, apellido2, id_correoempleado, id_telefonoempleado, id_rol)
-      VALUES 
-        (:n1, :n2, :a1, :a2, :correo, :telefono, :rol)
-      RETURNING id_empleado
+      INSERT INTO modelo.empleado (
+        nombre1, nombre2, apellido1, apellido2,
+        id_correoempleado, id_telefonoempleado, id_rol
+      ) VALUES (
+        :n1, :n2, :a1, :a2,
+        :c1, :t1, :rol
+      ) RETURNING id_empleado
     ");
     $stmt->execute([
       ':n1' => $nombre1,
       ':n2' => $nombre2,
       ':a1' => $apellido1,
       ':a2' => $apellido2,
-      ':correo' => $id_correoe,
-      ':telefono' => $id_telefonoe,
+      ':c1' => $id_c1,
+      ':t1' => $id_t1,
       ':rol' => $rol
     ]);
     $id_empleado = $stmt->fetchColumn();
 
-    // Insertar usuario asociado
-    $stmt = $conn->prepare("
-      INSERT INTO modelo.usuario (nombreusuario, contrasena, id_empleado)
-      VALUES (:usuario, :clave, :id_empleado)
-    ");
+    // Insertar usuario
+    $stmt = $conn->prepare("INSERT INTO modelo.usuario (nombreusuario, contrasena, id_empleado)
+                            VALUES (:usuario, :clave, :id_empleado)");
     $stmt->execute([
       ':usuario' => $usuario,
       ':clave' => $clave,
@@ -61,5 +73,4 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     die("Error al agregar empleado: " . $e->getMessage());
   }
 }
-?>
-
+s
