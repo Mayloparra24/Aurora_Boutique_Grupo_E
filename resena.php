@@ -89,7 +89,7 @@
 
 <!-- Modal Pedidos -->
 <div id="modal-pedidos" class="fixed inset-0 bg-black bg-opacity-40 z-[9998] hidden justify-center items-start pt-20">
-  <div class="bg-white rounded-lg shadow-lg w-full max-w-4xl max-h-[80vh] overflow-auto p-6 relative">
+  <div class="bg-white rounded-lg shadow-lg w-full max-w-4xl max-h-none overflow-auto p-6 relative">
     <button onclick="togglePedidos()" class="absolute top-4 right-4 text-gray-500 text-xl">✖</button>
     <h2 class="text-2xl font-bold mb-4">🧾 Pedidos realizados</h2>
     <table class="w-full border text-left text-sm">
