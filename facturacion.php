@@ -7,13 +7,17 @@ if (!isset($_SESSION['tipo']) || $_SESSION['tipo'] !== 'admin') {
   exit;
 }
 
-$facturas = $conn->query("
-  SELECT f.*, c.nombre1 || ' ' || c.apellido1 AS cliente
-  FROM modelo.factura f
-  JOIN modelo.pedido p ON f.id_pedido = p.id_pedido
-  JOIN modelo.cliente c ON p.id_cliente = c.id_cliente
-  ORDER BY f.fecha_emision DESC
-")->fetchAll(PDO::FETCH_ASSOC);
+try {
+  $facturas = $conn->query("
+    SELECT f.*, c.nombre1 || ' ' || c.apellido1 AS cliente
+    FROM modelo.factura f
+    JOIN modelo.pedido p ON f.id_pedido = p.id_pedido
+    JOIN modelo.cliente c ON p.id_cliente = c.id_cliente
+    ORDER BY f.fecha_emision DESC
+  ")->fetchAll(PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
+  die("<h1 style='color:red; font-family:monospace;'>⚠️ Error en facturación:</h1><pre>" . $e->getMessage() . "</pre>");
+}
 ?>
 
 <!DOCTYPE html>
