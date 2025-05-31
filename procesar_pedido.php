@@ -17,8 +17,8 @@ try {
     $conn->beginTransaction();
 
     // Obtener el id_cliente real desde la tabla cliente
-    $stmt = $conn->prepare("SELECT id_cliente FROM modelo.usuario WHERE id_usuario = :usuario");
-    $stmt->execute([':id' => $usuario_id]);
+    $stmt = $conn->prepare("SELECT id_cliente FROM modelo.cliente WHERE id_usuario = :usuario");
+    $stmt->execute([':usuario' => $usuario_id]);
     $cliente = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if (!$cliente) {
