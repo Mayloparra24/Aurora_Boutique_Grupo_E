@@ -16,6 +16,17 @@ $metodo = $_POST['metodopago'];
 try {
     $conn->beginTransaction();
 
+    // Obtener el id_cliente real desde la tabla cliente
+    $stmt = $conn->prepare("SELECT id_cliente FROM modelo.cliente WHERE id_usuario = :id");
+    $stmt->execute([':id' => $usuario_id]);
+    $cliente = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if (!$cliente) {
+        throw new Exception("Este usuario no tiene asociado un cliente válido.");
+    }
+
+    $id_cliente = $cliente['id_cliente'];
+
     // Verificar si aplica descuento
     $stmt = $conn->prepare("
         SELECT SUM(d.subtotal) AS total_compras
@@ -24,7 +35,7 @@ try {
         WHERE p.id_cliente = :cliente
           AND p.fecha_compra >= CURRENT_DATE - INTERVAL '6 months'
     ");
-    $stmt->execute([':cliente' => $usuario_id]);
+    $stmt->execute([':cliente' => $id_cliente]);
     $result = $stmt->fetch(PDO::FETCH_ASSOC);
     $total_compras = $result['total_compras'] ?? 0;
     $aplica_descuento = $total_compras >= 200000;
@@ -38,7 +49,7 @@ try {
         ) RETURNING id_pedido
     ");
     $stmt->execute([
-        ":cliente" => $usuario_id,
+        ":cliente" => $id_cliente,
         ":barrio" => $id_barrio,
         ":direccion" => $direccion
     ]);
