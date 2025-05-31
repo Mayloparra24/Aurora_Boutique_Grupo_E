@@ -17,18 +17,7 @@
 <!-- Navbar -->
 <nav class="flex justify-between items-center px-8 py-4 bg-slate-900 shadow-md relative">
   <div class="text-3xl font-bold text-yellow-400 tracking-tight">Aurora Boutique</div>
-  <div class="space-x-4 flex items-center">
-    <a href="index.php" class="bg-yellow-400 hover:bg-yellow-300 text-slate-900 font-semibold px-3 py-1 rounded">🛍️ Ver productos</a>
-    <div class="relative inline-block">
-      <button onclick="toggleCategorias()" class="bg-yellow-400 hover:bg-yellow-300 text-slate-900 font-semibold px-3 py-1 rounded">📂 Categorías</button>
-      <div id="menu-categorias" class="absolute mt-2 w-48 bg-white shadow-lg rounded hidden z-50">
-        <?php
-        $cats = $conn->query("SELECT id_categoria, nombre_categoria FROM modelo.catalogo_categoria ORDER BY nombre_categoria")->fetchAll(PDO::FETCH_ASSOC);
-        foreach ($cats as $cat): ?>
-          <a href="?categoria=<?= $cat['id_categoria'] ?>" class="block px-4 py-2 hover:bg-yellow-100 text-slate-900"><?= $cat['nombre_categoria'] ?></a>
-        <?php endforeach; ?>
-      </div>
-    </div>
+  <div class="space-x-4 flex items-center flex-wrap">
     <?php if (isset($_SESSION['usuario'])): ?>
       <span class="text-white font-medium">👤 <?php echo $_SESSION['usuario']; ?></span>
       <button onclick="togglePedidos()" class="bg-white text-slate-900 font-semibold px-3 py-1 rounded hover:bg-yellow-300 transition">🧾 Ver mis pedidos</button>
@@ -49,6 +38,19 @@
 <section class="bg-gradient-to-r from-slate-800 to-slate-700 text-center text-white py-20 px-6">
   <h1 class="text-5xl font-extrabold mb-4">Moda con esencia</h1>
   <p class="text-lg text-slate-200 mb-6">Elegancia, estilo y autenticidad en cada prenda.</p>
+  <div class="space-x-4">
+    <a href="index.php" class="bg-yellow-400 hover:bg-yellow-300 text-slate-900 font-semibold px-6 py-3 rounded text-lg shadow">🛍️ Ver productos</a>
+    <div class="relative inline-block">
+      <button onclick="toggleCategorias()" class="bg-yellow-400 hover:bg-yellow-300 text-slate-900 font-semibold px-6 py-3 rounded text-lg shadow">📂 Categorías</button>
+      <div id="menu-categorias" class="absolute left-0 mt-2 w-48 bg-white shadow-lg rounded hidden z-50">
+        <?php
+        $cats = $conn->query("SELECT id_categoria, nombre_categoria FROM modelo.catalogo_categoria ORDER BY nombre_categoria")->fetchAll(PDO::FETCH_ASSOC);
+        foreach ($cats as $cat): ?>
+          <a href="?categoria=<?= $cat['id_categoria'] ?>" class="block px-4 py-2 hover:bg-yellow-100 text-slate-900"><?= $cat['nombre_categoria'] ?></a>
+        <?php endforeach; ?>
+      </div>
+    </div>
+  </div>
 </section>
 
 <!-- Colección -->
@@ -84,10 +86,13 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)):
 
 <script>
 function toggleCategorias() {
-  const menu = document.getElementById("menu-categorias");
-  menu.classList.toggle("hidden");
+  document.getElementById("menu-categorias").classList.toggle("hidden");
 }
 </script>
+
+<div id="contenedor-carrito"></div>
+</body>
+</html>
 
 <!-- Toast mensaje -->
 <?php if (isset($_GET['mensaje']) && $_GET['mensaje'] === 'pedido_ok'): ?>
