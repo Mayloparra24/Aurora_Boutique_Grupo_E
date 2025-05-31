@@ -46,6 +46,7 @@ $categorias = $conn->query("SELECT id_categoria, nombre_categoria FROM modelo.ca
 <div class="text-right mb-6">
   <a href="../logout.php" class="text-sm text-blue-600 hover:underline">🔒 Cerrar sesión</a>
   <a href="facturacion.php" class="ml-4 text-sm text-purple-700 font-semibold hover:underline">📄 Ver facturación</a>
+  <a href="ver_resenas.php" class="ml-4 text-sm text-green-700 font-semibold hover:underline">⭐ Ver reseñas</a>
 </div>
 
 <div class="mb-6 space-x-4">
