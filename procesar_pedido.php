@@ -34,7 +34,7 @@ try {
         INSERT INTO modelo.pedido (
             id_cliente, id_empleado_responsable, id_barrio_entrega, id_estadopedido, fecha_compra, direccion_detallada
         ) VALUES (
-            :cliente, NULL, :barrio, 2, CURRENT_DATE, :direccion
+            :cliente, NULL, :barrio, 2, CURRENT_TIMESTAMP, :direccion
         ) RETURNING id_pedido
     ");
     $stmt->execute([
