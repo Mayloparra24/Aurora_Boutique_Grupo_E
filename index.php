@@ -7,15 +7,24 @@
   <link href="css/tailwind.css" rel="stylesheet">
   <style>
     html, body {
-      overflow: visible !important;
-      position: static !important;
+      overflow-x: hidden;
+    }
+    nav.sticky {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+    .hero-bg {
+      background-image: url('media/hero-bg.png');
+      background-size: cover;
+      background-position: center;
     }
   </style>
 </head>
 <body class="bg-slate-50 text-gray-800 font-sans">
 
 <!-- Navbar -->
-<nav class="flex justify-between items-center px-8 py-4 bg-slate-900 shadow-md relative">
+<nav class="sticky flex justify-between items-center px-8 py-4 bg-slate-900 shadow-md">
   <div class="text-3xl font-bold text-yellow-400 tracking-tight">Aurora Boutique</div>
   <div class="space-x-4 flex items-center flex-wrap">
     <?php if (isset($_SESSION['usuario'])): ?>
@@ -35,7 +44,7 @@
 </nav>
 
 <!-- Hero -->
-<section class="bg-gradient-to-r from-slate-800 to-slate-700 text-center text-white py-20 px-6">
+<section class="hero-bg text-center text-white py-20 px-6">
   <h1 class="text-5xl font-extrabold mb-4">Moda con esencia</h1>
   <p class="text-lg text-slate-200 mb-6">Elegancia, estilo y autenticidad en cada prenda.</p>
   <div class="space-x-4">
