@@ -38,7 +38,7 @@
 <section class="bg-gradient-to-r from-slate-800 to-slate-700 text-center text-white py-20 px-6">
   <h1 class="text-5xl font-extrabold mb-4">Moda con esencia</h1>
   <p class="text-lg text-slate-200 mb-6">Elegancia, estilo y autenticidad en cada prenda.</p>
-  <a href="#coleccion" class="bg-yellow-400 hover:bg-yellow-300 text-slate-900 font-semibold px-6 py-3 rounded-full text-lg transition shadow">Ver productos</a>
+  <a href="#coleccion" class="bg-yellow-400 hover:bg-yellow-300 text-slate-900 font-semibold px-6 py-3 rounded-full text-lg transition shadow">Ver colección</a>
 </section>
 
 <!-- Colección -->
@@ -141,13 +141,15 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)):
   </div>
 </div>
 
-<!-- Footer y Scripts -->
+<!-- Footer -->
 <footer class="bg-slate-900 text-slate-400 py-6 text-center mt-10">
   © <?= date("Y"); ?> Aurora Boutique. Todos los derechos reservados.
 </footer>
 
+<!-- Scripts -->
 <script>
 let carrito = [];
+
 function agregarAlCarrito(id, nombre, precio) {
   const existente = carrito.find(p => p.id === id);
   if (existente) {
@@ -158,6 +160,7 @@ function agregarAlCarrito(id, nombre, precio) {
   localStorage.setItem("carrito", JSON.stringify(carrito));
   actualizarCarrito();
 }
+
 function actualizarCarrito() {
   const contador = document.getElementById("contador-carrito");
   const totalItems = carrito.reduce((sum, item) => sum + item.cantidad, 0);
@@ -174,11 +177,13 @@ function actualizarCarrito() {
   });
   total.innerText = "₡" + totalGeneral.toFixed(2);
 }
+
 function vaciarCarrito() {
   carrito = [];
   localStorage.setItem("carrito", "[]");
   actualizarCarrito();
 }
+
 function cargarCarrito() {
   fetch("carrito.php")
     .then(r => r.text())
@@ -187,19 +192,23 @@ function cargarCarrito() {
       actualizarCarrito();
     });
 }
+
 function cerrarCarrito() {
   document.getElementById("contenedor-carrito").innerHTML = "";
 }
+
 function togglePedidos() {
   const modal = document.getElementById("modal-pedidos");
   modal.classList.toggle("hidden");
   modal.classList.toggle("flex");
 }
+
 window.onload = () => {
   carrito = JSON.parse(localStorage.getItem("carrito") || "[]");
   actualizarCarrito();
 }
 </script>
+
 <div id="contenedor-carrito"></div>
 </body>
 </html>
