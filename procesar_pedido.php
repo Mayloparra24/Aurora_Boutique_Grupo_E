@@ -16,16 +16,17 @@ $metodo = $_POST['metodopago'];
 try {
     $conn->beginTransaction();
 
-    // Obtener el id_cliente real desde la tabla cliente
-    $stmt = $conn->prepare("SELECT id_cliente FROM modelo.cliente WHERE id_usuario = :usuario");
-    $stmt->execute([':usuario' => $usuario_id]);
-    $cliente = $stmt->fetch(PDO::FETCH_ASSOC);
+    // Obtener el id_cliente real desde la tabla usuario (no cliente)
+$stmt = $conn->prepare("SELECT id_cliente FROM modelo.usuario WHERE id_usuario = :id_usuario");
+$stmt->execute([':id_usuario' => $usuario_id]);
+$cliente = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    if (!$cliente) {
-        throw new Exception("Este usuario no tiene asociado un cliente válido.");
-    }
+if (!$cliente || !$cliente['id_cliente']) {
+    throw new Exception("Este usuario no tiene asociado un cliente válido.");
+}
 
-    $id_cliente = $cliente['id_cliente'];
+$id_cliente = $cliente['id_cliente'];
+
 
     // Verificar si aplica descuento
     $stmt = $conn->prepare("
