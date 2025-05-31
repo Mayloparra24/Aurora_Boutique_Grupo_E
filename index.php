@@ -19,13 +19,15 @@
   }
 
   .hero-bg {
-    background-image: url('media/hero-bg.png'); /* O el nombre correcto del archivo */
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-attachment: scroll;
-    min-height: 500px; /* Asegura espacio para que se vea */
-  }
+  background-image: url('media/hero-bg.png');
+  background-size: cover;
+  background-position: top; /* <-- Aquí el cambio */
+  background-repeat: no-repeat;
+  background-attachment: scroll;
+  min-height: 500px;
+  position: relative;
+}
+
 
   .hero-bg h1, .hero-bg p, .hero-bg .space-x-4 {
     position: relative;
