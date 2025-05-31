@@ -7,11 +7,11 @@ if (!isset($_SESSION['tipo']) || $_SESSION['tipo'] !== 'admin') {
   exit;
 }
 
-$resenas = $conn->query("SELECT r.id_reseña, r.comentario, r.calificacion, p.id_pedido, c.nombre1 || ' ' || c.apellido1 AS cliente
-                          FROM modelo.\"rese\u00f1a\" r
+$resenas = $conn->query("SELECT r.id_"reseña", r.comentario, r.calificacion, p.id_pedido, c.nombre1 || ' ' || c.apellido1 AS cliente
+                          FROM modelo."reseña"
                           JOIN modelo.pedido p ON r.id_pedido = p.id_pedido
                           JOIN modelo.cliente c ON r.id_cliente = c.id_cliente
-                          ORDER BY r.id_reseña DESC")->fetchAll(PDO::FETCH_ASSOC);
+                          ORDER BY r.id_"reseña" DESC")->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
 <!DOCTYPE html>
