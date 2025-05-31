@@ -720,10 +720,6 @@ video {
   max-height: 15rem;
 }
 
-.max-h-\[80vh\] {
-  max-height: 80vh;
-}
-
 .max-h-none {
   max-height: none;
 }
