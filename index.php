@@ -18,6 +18,17 @@
 <nav class="flex justify-between items-center px-8 py-4 bg-slate-900 shadow-md relative">
   <div class="text-3xl font-bold text-yellow-400 tracking-tight">Aurora Boutique</div>
   <div class="space-x-4 flex items-center">
+    <a href="index.php" class="bg-yellow-400 hover:bg-yellow-300 text-slate-900 font-semibold px-3 py-1 rounded">🛍️ Ver productos</a>
+    <div class="relative inline-block">
+      <button onclick="toggleCategorias()" class="bg-yellow-400 hover:bg-yellow-300 text-slate-900 font-semibold px-3 py-1 rounded">📂 Categorías</button>
+      <div id="menu-categorias" class="absolute mt-2 w-48 bg-white shadow-lg rounded hidden z-50">
+        <?php
+        $cats = $conn->query("SELECT id_categoria, nombre_categoria FROM modelo.catalogo_categoria ORDER BY nombre_categoria")->fetchAll(PDO::FETCH_ASSOC);
+        foreach ($cats as $cat): ?>
+          <a href="?categoria=<?= $cat['id_categoria'] ?>" class="block px-4 py-2 hover:bg-yellow-100 text-slate-900"><?= $cat['nombre_categoria'] ?></a>
+        <?php endforeach; ?>
+      </div>
+    </div>
     <?php if (isset($_SESSION['usuario'])): ?>
       <span class="text-white font-medium">👤 <?php echo $_SESSION['usuario']; ?></span>
       <button onclick="togglePedidos()" class="bg-white text-slate-900 font-semibold px-3 py-1 rounded hover:bg-yellow-300 transition">🧾 Ver mis pedidos</button>
@@ -38,18 +49,22 @@
 <section class="bg-gradient-to-r from-slate-800 to-slate-700 text-center text-white py-20 px-6">
   <h1 class="text-5xl font-extrabold mb-4">Moda con esencia</h1>
   <p class="text-lg text-slate-200 mb-6">Elegancia, estilo y autenticidad en cada prenda.</p>
-  <a href="#coleccion" class="bg-yellow-400 hover:bg-yellow-300 text-slate-900 font-semibold px-6 py-3 rounded-full text-lg transition shadow">Ver colección</a>
 </section>
 
 <!-- Colección -->
 <section id="coleccion" class="p-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 bg-slate-100">
 <?php
+$filtro = "";
+if (isset($_GET['categoria'])) {
+  $filtro = "WHERE p.id_categoria = " . intval($_GET['categoria']);
+}
 $sql = "SELECT p.id_producto, p.nombre, p.descripcion, p.precio, p.stock,
                t.nombre_talla, c.nombre_color, g.nombre_categoria
         FROM modelo.producto p
         JOIN modelo.catalogo_talla t ON p.id_talla = t.id_talla
         JOIN modelo.catalogo_color c ON p.id_color = c.id_color
-        JOIN modelo.catalogo_categoria g ON p.id_categoria = g.id_categoria";
+        JOIN modelo.catalogo_categoria g ON p.id_categoria = g.id_categoria
+        $filtro";
 $stmt = $conn->query($sql);
 while ($row = $stmt->fetch(PDO::FETCH_ASSOC)):
 ?>
@@ -66,6 +81,13 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)):
   </div>
 <?php endwhile; ?>
 </section>
+
+<script>
+function toggleCategorias() {
+  const menu = document.getElementById("menu-categorias");
+  menu.classList.toggle("hidden");
+}
+</script>
 
 <!-- Toast mensaje -->
 <?php if (isset($_GET['mensaje']) && $_GET['mensaje'] === 'pedido_ok'): ?>
