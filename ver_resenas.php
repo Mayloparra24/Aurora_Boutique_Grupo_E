@@ -7,11 +7,19 @@ if (!isset($_SESSION['tipo']) || $_SESSION['tipo'] !== 'admin') {
   exit;
 }
 
-$resenas = $conn->query("SELECT r.id_"reseña", r.comentario, r.calificacion, p.id_pedido, c.nombre1 || ' ' || c.apellido1 AS cliente
-                          FROM modelo."reseña"
-                          JOIN modelo.pedido p ON r.id_pedido = p.id_pedido
-                          JOIN modelo.cliente c ON r.id_cliente = c.id_cliente
-                          ORDER BY r.id_"reseña" DESC")->fetchAll(PDO::FETCH_ASSOC);
+$resenas = [];
+$error = "";
+
+try {
+  $sql = 'SELECT r."id_reseña", r.comentario, r.calificacion, p.id_pedido, c.nombre1 || \' \' || c.apellido1 AS cliente
+          FROM modelo."reseña" r
+          JOIN modelo.pedido p ON r.id_pedido = p.id_pedido
+          JOIN modelo.cliente c ON r.id_cliente = c.id_cliente
+          ORDER BY r."id_reseña" DESC';
+  $resenas = $conn->query($sql)->fetchAll(PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
+  $error = $e->getMessage();
+}
 ?>
 
 <!DOCTYPE html>
@@ -28,7 +36,11 @@ $resenas = $conn->query("SELECT r.id_"reseña", r.comentario, r.calificacion, p.
 
   <h1 class="text-3xl font-bold mb-6">⭐ Reseñas de Clientes</h1>
 
-  <?php if (count($resenas) === 0): ?>
+  <?php if ($error): ?>
+    <div class="bg-red-100 text-red-700 p-4 rounded shadow mb-4">
+      <strong>Error:</strong> <?= htmlspecialchars($error) ?>
+    </div>
+  <?php elseif (count($resenas) === 0): ?>
     <p class="text-gray-600">No hay reseñas registradas.</p>
   <?php else: ?>
     <div class="space-y-4">
