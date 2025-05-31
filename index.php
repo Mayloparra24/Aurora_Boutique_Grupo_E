@@ -6,20 +6,44 @@
   <title>Aurora Boutique</title>
   <link href="css/tailwind.css" rel="stylesheet">
   <style>
-    html, body {
-      overflow-x: hidden;
-    }
-    nav.sticky {
-      position: sticky;
-      top: 0;
-      z-index: 50;
-    }
-    .hero-bg {
-      background-image: url('media/hero-bg.png');
-      background-size: cover;
-      background-position: center;
-    }
-  </style>
+  html, body {
+    overflow-x: hidden;
+    margin: 0;
+    padding: 0;
+  }
+
+  nav.sticky {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+  }
+
+  .hero-bg {
+    background-image: url('media/hero-bg.png'); /* O el nombre correcto del archivo */
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: scroll;
+    min-height: 500px; /* Asegura espacio para que se vea */
+  }
+
+  .hero-bg h1, .hero-bg p, .hero-bg .space-x-4 {
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero-bg::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.4); /* oscurece la imagen para mejor contraste de texto */
+    z-index: 0;
+  }
+
+  .hero-bg {
+    position: relative;
+  }
+</style>
 </head>
 <body class="bg-slate-50 text-gray-800 font-sans">
 
