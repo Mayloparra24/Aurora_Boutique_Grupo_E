@@ -8,22 +8,17 @@ include("db/conexion.php");
 $paises = $conn->query("SELECT id_pais, nombre FROM modelo.catalogo_pais")->fetchAll(PDO::FETCH_ASSOC);
 
 // Verificar si el cliente recibe el 15% de descuento
-$cliente_stmt = $conn->prepare("SELECT id_cliente FROM modelo.usuario WHERE id_usuario = :uid");
-$cliente_stmt->execute([':uid' => $id_usuario]);
-$id_cliente = $cliente_stmt->fetchColumn();
-
-$aplica_descuento = false;
-if ($id_cliente) {
-  $stmt = $conn->prepare("
-    SELECT SUM(d.subtotal) AS total_compras
-    FROM modelo.pedido p
-    JOIN modelo.detallepedido d ON p.id_pedido = d.id_pedido
-    WHERE p.id_cliente = :id_cliente
-      AND p.fecha_compra >= CURRENT_DATE - INTERVAL '6 months'
-  ");
-  $stmt->execute([':id_cliente' => $id_cliente]);
-  $data = $stmt->fetch(PDO::FETCH_ASSOC);
-  $aplica_descuento = ($data['total_compras'] ?? 0) >= 200000;
+$id_usuario = $_SESSION['id_usuario'];
+$stmt = $conn->prepare("
+  SELECT SUM(d.subtotal) AS total_compras
+  FROM modelo.pedido p
+  JOIN modelo.detallepedido d ON p.id_pedido = d.id_pedido
+  WHERE p.id_cliente = :id
+    AND p.fecha_compra >= CURRENT_DATE - INTERVAL '6 months'
+");
+$stmt->execute([':id' => $id_usuario]);
+$data = $stmt->fetch(PDO::FETCH_ASSOC);
+$aplica_descuento = ($data['total_compras'] ?? 0) >= 200000;
 ?>
 <!DOCTYPE html>
 <html lang="es">
