@@ -14,7 +14,7 @@ $stmt = $conn->prepare("
   FROM modelo.pedido p
   JOIN modelo.detallepedido d ON p.id_pedido = d.id_pedido
   WHERE p.id_cliente = :id
-    AND p.fecha_compra >= CURRENT_DATE - INTERVAL '6 months'
+    
 ");
 $stmt->execute([':id' => $id_usuario]);
 $data = $stmt->fetch(PDO::FETCH_ASSOC);
